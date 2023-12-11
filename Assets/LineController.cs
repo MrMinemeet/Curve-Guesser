@@ -4,7 +4,7 @@ using UnityEngine.Serialization;
 
 public class LineController : MonoBehaviour
 {
-	private const int POINT_COUNT = 40;
+	private const int POINT_COUNT = 1000;
 	
 	
 	// Add slider
@@ -18,16 +18,13 @@ public class LineController : MonoBehaviour
 	private Camera _camera;
 	private Func<float, double> _oldFunc;
 
-	private Vector3 _leftMostPos;
-	private Vector3 _rightMostPos;
+	private readonly Vector3 _leftMostPos = new Vector3(-50f, 0f, 0f);
+	private readonly Vector3 _rightMostPos = new Vector3(50f, 0f, 0f);
 	private void Awake()
 	{
 		_lr = GetComponent<LineRenderer>();
 		_lr.positionCount = POINT_COUNT;
 		_ec = GetComponent<EdgeCollider2D>();
-		
-		_leftMostPos = _camera.ViewportToWorldPoint(new Vector3(0, 0.5f, _camera.nearClipPlane));
-		_rightMostPos = _camera.ViewportToWorldPoint(new Vector3(1, 0.5f, _camera.nearClipPlane));
 	}
 
 	// Update is called once per frame
