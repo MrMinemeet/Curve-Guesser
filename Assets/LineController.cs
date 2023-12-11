@@ -16,6 +16,7 @@ public class LineController : MonoBehaviour
 	private EdgeCollider2D _ec;
 	[SerializeField]
 	private Camera _camera;
+	private Func<float, double> _oldFunc;
 
 	private Vector3 _leftMostPos;
 	private Vector3 _rightMostPos;
@@ -32,7 +33,11 @@ public class LineController : MonoBehaviour
 	// Update is called once per frame
 	void Update()
 	{
-		var func = Globals.Functions[functionName];
+		if(Globals.Functions.ContainsKey(functionName))
+		{
+			this._oldFunc = Globals.Functions[functionName];
+		}
+		
 		float width = (_rightMostPos.x - _leftMostPos.x);
 		var colliderPoints = new Vector2[POINT_COUNT];
 		
@@ -44,12 +49,11 @@ public class LineController : MonoBehaviour
 			float x = normalizedX * width + _leftMostPos.x;
 			
 			// Calculate the y value
-			var res = func(x * X_Value);
+			var res = _oldFunc(x * X_Value);
 
 			// Set the position of the point
-			_lr.SetPosition(i, new Vector3(x, (float)res, 0));
-			colliderPoints[i] = new Vector2(x, (float)res);
-			Debug.Log($"X: {x}, Y: {(float)res}");
+			_lr.SetPosition(i, new Vector3(x, (float)res  * 2, 0));
+			colliderPoints[i] = new Vector2(x, (float)res * 2);
 			
 			// Calculate the x value
 			//var res = func(i * X_Value);
