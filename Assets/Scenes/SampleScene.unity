@@ -704,7 +704,7 @@ PolygonCollider2D:
     m_Bits: 4294967295
   m_IsTrigger: 0
   m_UsedByEffector: 0
-  m_UsedByComposite: 1
+  m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
@@ -979,7 +979,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9da5c92d1b0c68f4882e70f255f04062, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _thrust: 2
+  thrust: 1
 --- !u!1 &1210601695
 GameObject:
   m_ObjectHideFlags: 0
