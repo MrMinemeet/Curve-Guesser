@@ -16,8 +16,6 @@ public class Move : MonoBehaviour
 		float eulerZ = transform.localEulerAngles.z;
 		Debug.Log($"Current rotation: {eulerZ}");
 		
-
-		// FIXME: The detection of rotation doesn't work properly yet. Because inspector rotation != transform.rotation
 		// Basically straight right is 0 and then counter clockwise the angle gets larger to 360
 		if (10 < eulerZ && eulerZ <= 90) 
 		{
