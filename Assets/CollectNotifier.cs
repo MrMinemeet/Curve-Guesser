@@ -11,6 +11,10 @@ public class CollectNotifier : MonoBehaviour
         {
             Debug.Log("Player collected present!");
             onCollect.Invoke(gameObject);
+            
+            // make transparent
+            SpriteRenderer spriteRenderer = GetComponent<SpriteRenderer>();
+            spriteRenderer.color = new Color(1f, 1f, 1f, 0.5f);
         }
     }
 }
