@@ -8,7 +8,7 @@ public class LevelGenerator : MonoBehaviour
     public GameObject Point;
     void Start()
     {
-        var level = Levels.levels.First();
+        var level = Level.levels.First();
         foreach (var point in level.Points)
         {
             var go = Instantiate(Point, new Vector3(point.x, point.y, 0), Quaternion.identity);
