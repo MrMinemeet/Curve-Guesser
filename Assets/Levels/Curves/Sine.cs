@@ -1,10 +1,10 @@
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 class Sine: Level
 {
-    List<string> parameters = new List<string>() { "a", "b", "c", "d" };
-    public Sine(params Vector2[] points) : base(points) { }
-    public Sine(string hint, params Vector2[] points) : base(hint, points) { }
+    public Sine(Difficulty difficulty, params (float x, float y)[] points) : base(difficulty, points) {}
+    public Sine(Difficulty difficulty, string hint, params (float x, float y)[] points) : base(difficulty, hint, points) { }
+
+    public override List<string> Parameters => new() { "a", "b", "c", "d" };
 }

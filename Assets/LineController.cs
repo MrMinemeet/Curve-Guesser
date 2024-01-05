@@ -9,7 +9,7 @@ public class LineController : MonoBehaviour
 	
 	
 	// Add slider
-	[Range(0, (float) Math.PI)]
+	[Range(-(float)Math.PI, (float) Math.PI)]
 	public float X_Value = 1.0f;
 	private float _oldXValue = 1.0f;
 	[SerializeField]
