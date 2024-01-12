@@ -27,12 +27,4 @@ public class UIControll: MonoBehaviour
     {
         SceneManager.LoadScene("Scenes/MainMenu", LoadSceneMode.Single);
     }
-
-
-    //Game
-
-    public void Launch()
-    {
-
-    }
 }
