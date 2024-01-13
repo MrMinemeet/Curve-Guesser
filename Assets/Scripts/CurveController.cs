@@ -16,6 +16,7 @@ public class CurveController : MonoBehaviour
 
     private float start = -10f;
     private float end = 10f;
+    private Coroutine rocketAnimation;
 
     private List<Level> levels;
     private int currentLevelIndex;
@@ -27,8 +28,32 @@ public class CurveController : MonoBehaviour
 
     private bool isLaunched = false;
 
+    private List<GameObject> placedElements;
+
+    private GameObject soundSystem;
+
+    private Sprite[] pointSprites;
+    private Sprite[] obstacleSprites;
+    private GameObject pointPrefab;
+    private GameObject obstaclePrefab;
+
+    private GameObject levelFinishedUI;
+    private GameObject UI;
+
     void Start()
     {
+        soundSystem = GameObject.Find("SoundSystem");
+        DontDestroyOnLoad(soundSystem);
+
+        pointSprites = Resources.LoadAll<Sprite>("Sprites/stars");
+        obstacleSprites = Resources.LoadAll<Sprite>("Sprites/asteroids");
+        pointPrefab = Resources.Load<GameObject>("Prefabs/Point");
+        obstaclePrefab = Resources.Load<GameObject>("Prefabs/Obstacle");
+
+        levelFinishedUI = GameObject.Find("LevelFinishedUI");
+        UI = GameObject.Find("UI");
+        levelFinishedUI.SetActive(false);
+
         difficulty = LevelSelector.difficulty;
         function = LevelSelector.function;
         lineRenderer = GetComponent<LineRenderer>();
@@ -63,9 +88,11 @@ public class CurveController : MonoBehaviour
             case Function.Cubic: 
                 break;
         }
+        placedElements = new List<GameObject>();
+        loadLevel(levels[currentLevelIndex]);
     }
 
-    void Update()
+    void FixedUpdate()
     {
         Draw();
     }
@@ -86,8 +113,9 @@ public class CurveController : MonoBehaviour
     {
         if (!isLaunched)
         {
+            soundSystem.GetComponent<AudioSource>().PlayOneShot(Resources.Load<AudioClip>("Sounds/rocketlaunch"));
             isLaunched = true;
-            StartCoroutine(animate());
+            rocketAnimation = StartCoroutine(animate());
         }
     }
 
@@ -114,10 +142,60 @@ public class CurveController : MonoBehaviour
         }
         Rocket.transform.position = new Vector3(15,0);
         isLaunched = false;
+        rocketAnimation = null;
+        loadNextScreen();
     }
 
     private float Y(float x)
     {
         return (float)levels[currentLevelIndex].applyLevelFunction(x, a.value, b.value, c.value, d.value);
+    }
+
+    private void loadLevel(Level level)
+    {
+
+        foreach(var go in placedElements)
+        {
+            Destroy(go);
+        }
+        placedElements.Clear();
+
+        foreach(var obstacle in level.obstacles)
+        {
+            var go = Instantiate(obstaclePrefab, obstacle, Quaternion.Euler(0,0, Random.Range(0,360)));
+            go.GetComponent<SpriteRenderer>().sprite = obstacleSprites[Random.Range(0, obstacleSprites.Length)];
+            placedElements.Add(go);
+        }
+        foreach (var point in level.points)
+        {
+            var go = Instantiate(pointPrefab, point, Quaternion.Euler(0, 0, Random.Range(0, 360)));
+            go.GetComponent<SpriteRenderer>().sprite = pointSprites[Random.Range(0, pointSprites.Length)];
+            placedElements.Add(go);
+        }
+        if(rocketAnimation != null) StopCoroutine(rocketAnimation);
+        Rocket.transform.position = new Vector3(15, 0);
+        isLaunched = false;
+        rocketAnimation = null;
+    }
+
+    private void loadNextScreen()
+    {
+        soundSystem.GetComponent<AudioSource>().PlayOneShot(Resources.Load<AudioClip>("Sounds/winning"));
+        levelFinishedUI.SetActive(true);
+        UI.SetActive(false);
+    }
+
+    public void OnPointCollision(GameObject gameObject)
+    {
+        soundSystem.GetComponent<AudioSource>().PlayOneShot(Resources.Load<AudioClip>("Sounds/collectstar"));
+        Vector3 pos = gameObject.transform.position;
+        Debug.Log(pos);
+        Destroy(gameObject);
+    }
+
+    public void OnObstacleCollision()
+    {
+        soundSystem.GetComponent<AudioSource>().PlayOneShot(Resources.Load<AudioClip>("Sounds/rockethit"));
+        loadLevel(levels[currentLevelIndex]);
     }
 }

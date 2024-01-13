@@ -20,8 +20,14 @@ public class LevelSelector : MonoBehaviour
     private static Color yellow = new(0.925f, 1f, 0f);
     private static Color orange = new(1f, 0.5f, 0f);
 
+
+    private GameObject soundSystem;
+
     private void Start()
     {
+        soundSystem = GameObject.Find("SoundSystem");
+        DontDestroyOnLoad(soundSystem);
+
         SineText = GameObject.Find("FunctionGrid/Sine/Text (TMP)").GetComponent<TextMeshProUGUI>();
         LinearText = GameObject.Find("FunctionGrid/Linear/Text (TMP)").GetComponent<TextMeshProUGUI>();
         SquareText = GameObject.Find("FunctionGrid/Square/Text (TMP)").GetComponent<TextMeshProUGUI>();
@@ -45,6 +51,7 @@ public class LevelSelector : MonoBehaviour
 
     public void Linear()
     {
+        soundSystem.GetComponent<AudioSource>().PlayOneShot(Resources.Load<AudioClip>("Sounds/buttonpress"));
         function = Function.Linear;
         SineText.color = yellow;
         LinearText.color = orange;
@@ -54,6 +61,7 @@ public class LevelSelector : MonoBehaviour
 
     public void Square()
     {
+        soundSystem.GetComponent<AudioSource>().PlayOneShot(Resources.Load<AudioClip>("Sounds/buttonpress"));
         function = Function.Square;
         SineText.color = yellow;
         LinearText.color = yellow;
@@ -63,6 +71,7 @@ public class LevelSelector : MonoBehaviour
 
     public void Cubic()
     {
+        soundSystem.GetComponent<AudioSource>().PlayOneShot(Resources.Load<AudioClip>("Sounds/buttonpress"));
         function = Function.Cubic;
         SineText.color = yellow;
         LinearText.color = yellow;
@@ -72,6 +81,7 @@ public class LevelSelector : MonoBehaviour
 
     public void Tutorial()
     {
+        soundSystem.GetComponent<AudioSource>().PlayOneShot(Resources.Load<AudioClip>("Sounds/buttonpress"));
         difficulty = Difficulty.Tutorial;
         TutorialText.color = orange;
         EasyText.color = yellow;
@@ -82,6 +92,7 @@ public class LevelSelector : MonoBehaviour
 
     public void Easy()
     {
+        soundSystem.GetComponent<AudioSource>().PlayOneShot(Resources.Load<AudioClip>("Sounds/buttonpress"));
         difficulty = Difficulty.Easy;
         TutorialText.color = yellow;
         EasyText.color = orange;
@@ -92,6 +103,7 @@ public class LevelSelector : MonoBehaviour
 
     public void Medium()
     {
+        soundSystem.GetComponent<AudioSource>().PlayOneShot(Resources.Load<AudioClip>("Sounds/buttonpress"));
         difficulty = Difficulty.Medium;
         TutorialText.color = yellow;
         EasyText.color = yellow;
@@ -102,6 +114,7 @@ public class LevelSelector : MonoBehaviour
 
     public void Hard()
     {
+        soundSystem.GetComponent<AudioSource>().PlayOneShot(Resources.Load<AudioClip>("Sounds/buttonpress"));
         difficulty = Difficulty.Hard;
         TutorialText.color = yellow;
         EasyText.color = yellow;
@@ -112,6 +125,7 @@ public class LevelSelector : MonoBehaviour
 
     public void Expert()
     {
+        soundSystem.GetComponent<AudioSource>().PlayOneShot(Resources.Load<AudioClip>("Sounds/buttonpress"));
         difficulty = Difficulty.Expert;
         TutorialText.color = yellow;
         EasyText.color = yellow;
@@ -122,11 +136,13 @@ public class LevelSelector : MonoBehaviour
 
     public void Back()
     {
+        soundSystem.GetComponent<AudioSource>().PlayOneShot(Resources.Load<AudioClip>("Sounds/buttonpress"));
         SceneManager.LoadScene("Scenes/MainMenu", LoadSceneMode.Single);
     }
 
     public void StartGame()
     {
+        soundSystem.GetComponent<AudioSource>().PlayOneShot(Resources.Load<AudioClip>("Sounds/buttonpress"));
         SceneManager.LoadScene("Scenes/GameScene", LoadSceneMode.Single);
     }
 }
