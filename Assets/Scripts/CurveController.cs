@@ -1,7 +1,6 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UIElements;
+using static Level;
 
 public class CurveController : MonoBehaviour
 {
@@ -9,14 +8,19 @@ public class CurveController : MonoBehaviour
     public LineRenderer lineRenderer;
     public float RocketSpeed = 1;
     public int Points;
+    
+    private Difficulty difficulty;
+    private Function function;
 
-
-    private float start = -8.888889f;
-    private float end = 8.888889f;
+    private float start = -10f;
+    private float end = 10f;
     // Start is called before the first frame update
     void Start()
     {
+        difficulty = LevelSelector.difficulty;
+        function = LevelSelector.function;
         lineRenderer = GetComponent<LineRenderer>();
+        Debug.Log("Loaded");
     }
 
     // Update is called once per frame
