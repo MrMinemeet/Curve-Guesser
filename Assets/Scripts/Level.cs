@@ -52,7 +52,8 @@ class Level
     //add levels here
     public static List<Level> levels = new()
     {
-        new Level(Difficulty.Tutorial, Function.Sine, "All ones.", new Vector2[]{new(-1,-1), new(0,0), new(1,1)}, new Vector2[]{new(0,3), new(0,-3)}, Parameter.a)
+        new Level(Difficulty.Tutorial, Function.Sine, "All ones.", new Vector2[]{new(-1,-1), new(0,0), new(1,1)}, new Vector2[]{new(0,3), new(0,-3)}, Parameter.a),
+        new Level(Difficulty.Tutorial, Function.Sine, "All ones.", new Vector2[]{new(-1,1), new(0,0), new(1,-1)}, new Vector2[]{new(0,3), new(0,-3)}, Parameter.a)
     };
 
     public double applyLevelFunction(double x, double a, double b, double c, double d) => func(x, a, b, c, d);

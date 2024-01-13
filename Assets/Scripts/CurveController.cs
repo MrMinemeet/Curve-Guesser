@@ -1,7 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class CurveController : MonoBehaviour
@@ -26,6 +28,20 @@ public class CurveController : MonoBehaviour
     private Slider c;
     private Slider d;
 
+    private GameObject parA;
+    private GameObject parB;
+    private GameObject parC;
+    private GameObject parD;
+
+    private GameObject parAName;
+    private GameObject parBName;
+    private GameObject parCName;
+    private GameObject parDName;
+
+    private TextMeshProUGUI starsText;
+    private TextMeshProUGUI scoreText;
+    private TextMeshProUGUI failsText;
+
     private bool isLaunched = false;
 
     private List<GameObject> placedElements;
@@ -40,6 +56,9 @@ public class CurveController : MonoBehaviour
     private GameObject levelFinishedUI;
     private GameObject UI;
 
+    private int fails = 0;
+    private int collectedStars = 0;
+
     void Start()
     {
         soundSystem = GameObject.Find("SoundSystem");
@@ -52,6 +71,11 @@ public class CurveController : MonoBehaviour
 
         levelFinishedUI = GameObject.Find("LevelFinishedUI");
         UI = GameObject.Find("UI");
+
+        starsText = GameObject.Find("LevelFinishedUI/StarsText").GetComponent<TextMeshProUGUI>();
+        scoreText = GameObject.Find("LevelFinishedUI/ScoreText").GetComponent<TextMeshProUGUI>();
+        failsText = GameObject.Find("LevelFinishedUI/FailsText").GetComponent<TextMeshProUGUI>();
+
         levelFinishedUI.SetActive(false);
 
         difficulty = LevelSelector.difficulty;
@@ -60,10 +84,21 @@ public class CurveController : MonoBehaviour
         levels = Level.levels.Where(level => level.difficulty == difficulty && level.function == function).ToList();
         currentLevelIndex = 0;
 
-        a = GameObject.Find("UI/SliderGroup/Parameter A").GetComponent<Slider>();
-        b = GameObject.Find("UI/SliderGroup/Parameter B").GetComponent<Slider>();
-        c = GameObject.Find("UI/SliderGroup/Parameter C").GetComponent<Slider>();
-        d = GameObject.Find("UI/SliderGroup/Parameter D").GetComponent<Slider>();
+
+        parA = GameObject.Find("UI/SliderGroup/Parameter A");
+        parB = GameObject.Find("UI/SliderGroup/Parameter B");
+        parC = GameObject.Find("UI/SliderGroup/Parameter C");
+        parD = GameObject.Find("UI/SliderGroup/Parameter D");
+
+        parAName = GameObject.Find("UI/ParameterNameGroup/A");
+        parBName = GameObject.Find("UI/ParameterNameGroup/B");
+        parCName = GameObject.Find("UI/ParameterNameGroup/C");
+        parDName = GameObject.Find("UI/ParameterNameGroup/D");
+
+        a = parA.GetComponent<Slider>();
+        b = parB.GetComponent<Slider>();
+        c = parC.GetComponent<Slider>();
+        d = parD.GetComponent<Slider>();
 
         switch (function)
         {
@@ -153,8 +188,16 @@ public class CurveController : MonoBehaviour
 
     private void loadLevel(Level level)
     {
+        parA.SetActive(level.parameters.Contains(Parameter.a));
+        parAName.SetActive(level.parameters.Contains(Parameter.a));
+        parB.SetActive(level.parameters.Contains(Parameter.b));
+        parBName.SetActive(level.parameters.Contains(Parameter.b));
+        parC.SetActive(level.parameters.Contains(Parameter.c));
+        parCName.SetActive(level.parameters.Contains(Parameter.c));
+        parD.SetActive(level.parameters.Contains(Parameter.d));
+        parDName.SetActive(level.parameters.Contains(Parameter.d));
 
-        foreach(var go in placedElements)
+        foreach (var go in placedElements)
         {
             Destroy(go);
         }
@@ -176,6 +219,7 @@ public class CurveController : MonoBehaviour
         Rocket.transform.position = new Vector3(15, 0);
         isLaunched = false;
         rocketAnimation = null;
+        collectedStars = 0;
     }
 
     private void loadNextScreen()
@@ -183,6 +227,8 @@ public class CurveController : MonoBehaviour
         soundSystem.GetComponent<AudioSource>().PlayOneShot(Resources.Load<AudioClip>("Sounds/winning"));
         levelFinishedUI.SetActive(true);
         UI.SetActive(false);
+        starsText.text = "Stars: " + collectedStars + "/" + levels[currentLevelIndex].points.Count;
+        failsText.text = "Fails: " + fails;
     }
 
     public void OnPointCollision(GameObject gameObject)
@@ -191,11 +237,39 @@ public class CurveController : MonoBehaviour
         Vector3 pos = gameObject.transform.position;
         Debug.Log(pos);
         Destroy(gameObject);
+        collectedStars++;
     }
 
     public void OnObstacleCollision()
     {
         soundSystem.GetComponent<AudioSource>().PlayOneShot(Resources.Load<AudioClip>("Sounds/rockethit"));
         loadLevel(levels[currentLevelIndex]);
+        fails++;
+    }
+
+
+    //NextLevelUI
+
+    public void NextLevel()
+    {
+        soundSystem.GetComponent<AudioSource>().PlayOneShot(Resources.Load<AudioClip>("Sounds/buttonpress"));
+        loadLevel(levels[++currentLevelIndex]);
+        levelFinishedUI.SetActive(false);
+        UI.SetActive(true);
+    }
+
+    public void Retry()
+    {
+        soundSystem.GetComponent<AudioSource>().PlayOneShot(Resources.Load<AudioClip>("Sounds/buttonpress"));
+        loadLevel(levels[currentLevelIndex]);
+        levelFinishedUI.SetActive(false);
+        UI.SetActive(true);
+        fails++;
+    }
+
+    public void MainMenu()
+    {
+        soundSystem.GetComponent<AudioSource>().PlayOneShot(Resources.Load<AudioClip>("Sounds/buttonpress"));
+        SceneManager.LoadScene("Scenes/MainMenu", LoadSceneMode.Single);
     }
 }
