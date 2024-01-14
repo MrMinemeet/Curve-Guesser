@@ -13,6 +13,7 @@ class Level
 
     private readonly Func<double, double, double, double, double, double> func;
     public readonly ISet<Parameter> parameters;
+    private const float PI = Mathf.PI;
 
     public Level(
         Difficulty difficulty, 
@@ -39,17 +40,31 @@ class Level
     }
     private static Vector2[] empty = new Vector2[0];
 
+    #region Levels
+    /// <summary>
+    /// Levels for the game are declared here.
+    /// </summary>
     //add levels here
     public static List<Level> levels = new()
     {
         //Sine
         //Tutorial
         new Level(Difficulty.Tutorial, Function.Sine, "This is a sine function, it represents a wave. You can play around with the parameters and see what they do.", empty, empty, Parameter.a, Parameter.b, Parameter.c, Parameter.d),
-        new Level(Difficulty.Tutorial, Function.Sine, "Your Goal is to collect as many stars as you can. Hitting them closer to the center gains you more points.", new Vector2[]{ new(-Mathf.PI, 0), new(-Mathf.PI/2,-1), new(0,0), new(Mathf.PI / 2, 1), new(Mathf.PI, 0) }, empty),
+        new Level(Difficulty.Tutorial, Function.Sine, "Your Goal is to collect as many stars as you can. Hitting them closer to the center gains you more points.", new Vector2[]{new(-PI, 0), new(-PI/2,-1), new(0,0), new(PI / 2, 1), new(PI, 0)}, empty),
         new Level(Difficulty.Tutorial, Function.Sine, "You can change the amplitude of the wave with the parameter a.", new Vector2[]{new(-1,-1), new(0,0), new(1,1)}, empty, Parameter.a),
-        new Level(Difficulty.Tutorial, Function.Sine, "Crashing into an asteroid makes you fail the level. Try it.", empty, new Vector2[]{ new(5 * Mathf.PI / 2, 1) }, Parameter.a),
-        new Level(Difficulty.Tutorial, Function.Sine, null, new Vector2[]{new(-1,1), new(0,0), new(1,-1)}, new Vector2[]{new(-Mathf.PI,-1), new(Mathf.PI, 1) }, Parameter.a),
-         //Easy
+        new Level(Difficulty.Tutorial, Function.Sine, "Crashing into an asteroid makes you fail the level. Try it.", empty, new Vector2[]{ new(5 * PI / 2, 1) }, Parameter.a),
+        new Level(Difficulty.Tutorial, Function.Sine, null, new Vector2[]{new(-1.1f,1), new(0,0), new(1,-1.1f)}, new Vector2[]{new(-PI,-1), new(PI, 1) }, Parameter.a),
+        new Level(Difficulty.Tutorial, Function.Sine, "The frequency of the curve can be changed with the parameter b.", new Vector2[]{new(-3*PI/4,1),new(-PI/4,-1),new(PI/4,1),new(3*PI/4,-1),new(5*PI/4,1)}, new Vector2[]{new(-3*PI/4,-1),new(-PI/4,1),new(PI/4,-1),new(3*PI/4,1),new(5*PI/4,-1)}, Parameter.b),
+        new Level(Difficulty.Tutorial, Function.Sine, null, new Vector2[]{new(-PI,3.3f), new(0,0), new(2*PI, 0)}, new Vector2[]{new(-PI, 0), new Vector2(PI, 0), new(-PI, 4.5f), new(-PI, 1.4f), new(-PI, -1.4f), new(-PI, -3.3f), new(-PI, -4.5f)}, Parameter.a, Parameter.b),
+        new Level(Difficulty.Tutorial, Function.Sine, "Parameter c can shift the entire curve to the left and right.", new Vector2[]{new(0, 1), new(2*PI, 1), new(-2*PI, 1), new(-PI,-1), new(PI,-1)}, empty, Parameter.c),
+        new Level(Difficulty.Tutorial, Function.Sine, null, new Vector2[]{new(0, 1), new(PI, 1), new(-PI, 1), new(-PI/2,-1), new(PI/2,-1)}, empty, Parameter.b, Parameter.c),
+        new Level(Difficulty.Tutorial, Function.Sine, null, new Vector2[]{new(-PI,1),new(-PI/2,-1),new(0,1),new(PI/2,-1),new(PI,1)}, new Vector2[]{new(-PI,-1),new(-PI/2,1),new(0,-1),new(PI/2,1),new(PI,-1)}, Parameter.b, Parameter.c), 
+        new Level(Difficulty.Tutorial, Function.Sine, null, new Vector2[]{new(0,3), new(8.55f,0), new(-8.55f,0)}, new Vector2[]{new(-6, 0),new(-5, 0),new(-4, 0),new(-3, 0),new(-2, 0),new(-1, 0),new(0, 0),new(1, 0),new(2, 0),new(3, 0),new(4, 0),new(5, 0),new(6, 0)}, Parameter.a, Parameter.b, Parameter.c), 
+        new Level(Difficulty.Tutorial, Function.Sine, "Parameter d can move the curve up and down.", new Vector2[]{new(-PI, 4), new(-PI/2,3), new(0,4), new(PI / 2, 5), new(PI, 4)}, new Vector2[]{new(-2*PI, -5),new(-2*PI, -4),new(-2*PI, -3),new(-2*PI, -2),new(-2*PI, -1),new(-2*PI, 0),new(-2*PI, 1),new(-2*PI, 2)}, Parameter.d),
+        new Level(Difficulty.Tutorial, Function.Sine, null, new Vector2[]{new(-2*PI, -2),new(0, -2),new(2*PI, -2)}, new Vector2[]{new(-2*PI, -3),new(0, -3),new(2*PI, -3),new(-2*PI, -1),new(0, -1),new(2*PI, -1),new(-PI, -3),new(PI, -1),new(-PI, -1),new(PI, -3),new(-3*PI/2,-3),new(-PI/2,-3)}, Parameter.a, Parameter.b, Parameter.c, Parameter.d),
+        new Level(Difficulty.Tutorial, Function.Sine, null, new Vector2[]{new(-2*PI, -2),new(0, -2),new(2*PI, -2)}, new Vector2[]{new(-2*PI, -3),new(0, -3),new(2*PI, -3),new(-2*PI, -1),new(0, -1),new(2*PI, -1),new(-PI, -3),new(PI, -1),new(-PI, -1),new(PI, -3), new(2*PI+1.2f, -2),new(-3*PI/2,-3),new(-PI/2,-3)}, Parameter.a, Parameter.b, Parameter.c, Parameter.d), 
+        new Level(Difficulty.Tutorial, Function.Sine, "Lets see how well you can apply all these parameters.", new Vector2[]{new(0,4),new(-2*PI, 4),new(7/6*PI,1)}, new Vector2[]{ new(-8, 0), new(-7, 0),new(-6, 0),new(-5, 0),new(-4, 0),new(-3, 0),new(-2, 0),new(-1, 0),new(0, 0),new(1, 0),new(2, 0),new(3, 0),new(4, 0),new(5, 0),new(6, 0),new(7, 0),new(8, 0)}, Parameter.a, Parameter.b, Parameter.c, Parameter.d), 
+        //Easy
         new Level(Difficulty.Easy, Function.Sine, "This Track is still empty.", empty, empty),
         //Medium
         new Level(Difficulty.Medium, Function.Sine, "This Track is still empty.", empty, empty),
@@ -95,6 +110,7 @@ class Level
         new Level(Difficulty.Expert, Function.Cubic, "This Track is still empty.", empty, empty),
 
     };
+    #endregion
 
     public double applyLevelFunction(double x, double a, double b, double c, double d) => func(x, a, b, c, d);
     private static double sine(double x, double a, double b, double c, double d) => a * System.Math.Sin(b * x + c) + d;

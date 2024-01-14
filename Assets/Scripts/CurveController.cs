@@ -137,21 +137,21 @@ public class CurveController : MonoBehaviour
         switch (function)
         {
             case Function.Sine:
-                a.minValue = -5;
-                a.maxValue = 5;
-                b.minValue = -Mathf.PI;
-                b.maxValue = Mathf.PI;
-                c.minValue = -Mathf.PI;
-                c.maxValue = Mathf.PI;
-                d.minValue = -4;
-                d.maxValue = 4;
+                a.minValue = -5000;
+                a.maxValue = 5000;
+                b.minValue = -6000;
+                b.maxValue = 6000;
+                c.minValue = -3142;
+                c.maxValue = 3142;
+                d.minValue = -4000;
+                d.maxValue = 4000;
                 overlay_NUMBER.SetActive(false);
                 break;
             case Function.Linear:
-                a.minValue = -5;
-                a.maxValue = 5;
-                b.minValue = -5;
-                b.maxValue = 5;
+                a.minValue = -5000;
+                a.maxValue = 5000;
+                b.minValue = -5000;
+                b.maxValue = 5000;
                 c.minValue = 0;
                 c.maxValue = 0;
                 d.minValue = 0;
@@ -159,25 +159,25 @@ public class CurveController : MonoBehaviour
                 overlay_PI.SetActive(false);
                 break;
             case Function.Square:
-                a.minValue = -5;
-                a.maxValue = 5;
-                b.minValue = -8;
-                b.maxValue = 8;
-                c.minValue = -5;
-                c.maxValue = 5;
+                a.minValue = -5000;
+                a.maxValue = 5000;
+                b.minValue = -8000;
+                b.maxValue = 8000;
+                c.minValue = -5000;
+                c.maxValue = 5000;
                 d.minValue = 0;
                 d.maxValue = 0;
                 overlay_PI.SetActive(false);
                 break;
             case Function.Cubic:
-                a.minValue = -5;
-                a.maxValue = 5;
-                b.minValue = -10;
-                b.maxValue = 10;
-                c.minValue = -8;
-                c.maxValue = 8;
-                d.minValue = -5;
-                d.maxValue = 5;
+                a.minValue = -5000;
+                a.maxValue = 5000;
+                b.minValue = -10000;
+                b.maxValue = 10000;
+                c.minValue = -8000;
+                c.maxValue = 8000;
+                d.minValue = -5000;
+                d.maxValue = 5000;
                 overlay_PI.SetActive(false);
                 break;
         }
@@ -205,40 +205,40 @@ public class CurveController : MonoBehaviour
         switch (function)
         {
             case Function.Sine:
-                if(a.value != 1) tb += (a.value).ToString("0.00") + "*";
+                if(a.value != 1000) tb += (a.value / 1000f).ToString("0.00") + "*";
                 tb += "sin(";
-                if(b.value != 1) tb += (b.value).ToString("0.00") + "*";
+                if(b.value != 1000) tb += (b.value / 1000f).ToString("0.00") + "*";
                 tb += "x";
-                if(c.value > 0) tb += "+" + (c.value).ToString("0.00");
-                if(c.value < 0) tb += (c.value).ToString("0.00");
+                if(c.value > 0) tb += "+" + (c.value / 1000f).ToString("0.00");
+                if(c.value < 0) tb += (c.value / 1000f).ToString("0.00");
                 tb += ")";
-                if(d.value > 0) tb += "+" + (d.value).ToString("0.00");
-                if(d.value < 0) tb += (d.value).ToString("0.00");
+                if(d.value > 0) tb += "+" + (d.value / 1000f).ToString("0.00");
+                if(d.value < 0) tb += (d.value / 1000f).ToString("0.00");
                 
                 break;
             case Function.Linear:
-                if(a.value != 1) tb += (a.value).ToString("0.00") + "*";
+                if(a.value != 1000) tb += (a.value / 1000f).ToString("0.00") + "*";
                 tb += "x";
-                if (b.value > 0) tb += "+" + (b.value).ToString("0.00");
-                if (b.value < 0) tb += (b.value).ToString("0.00");
+                if (b.value > 0) tb += "+" + (b.value / 1000f).ToString("0.00");
+                if (b.value < 0) tb += (b.value / 1000f).ToString("0.00");
                 break;
             case Function.Square:
-                if (a.value != 1) tb += (a.value).ToString("0.00") + "*";
+                if (a.value != 1000) tb += (a.value / 1000f).ToString("0.00") + "*";
                 tb += "x^2";
-                if (b.value > 0) tb += "+" + (b.value).ToString("0.00") + "x";
-                if (b.value < 0) tb += (b.value).ToString("0.00") + "x";
-                if (c.value > 0) tb += "+" + (c.value).ToString("0.00");
-                if (c.value < 0) tb += (c.value).ToString("0.00");
+                if (b.value > 0) tb += "+" + (b.value / 1000f).ToString("0.00") + "x";
+                if (b.value < 0) tb += (b.value / 1000f).ToString("0.00") + "x";
+                if (c.value > 0) tb += "+" + (c.value / 1000f).ToString("0.00");
+                if (c.value < 0) tb += (c.value / 1000f).ToString("0.00");
                 break;
             case Function.Cubic:
-                if (a.value != 1) tb += (a.value).ToString("0.00") + "*";
+                if (a.value != 1000) tb += (a.value / 1000f).ToString("0.00") + "*";
                 tb += "x^3";
-                if (b.value > 0) tb += "+" + (b.value).ToString("0.00") + "x^2";
-                if (b.value < 0) tb += (b.value).ToString("0.00") + "x^2";
-                if (c.value > 0) tb += "+" + (c.value).ToString("0.00") + "x";
-                if (c.value < 0) tb += (c.value).ToString("0.00") + "x";
-                if (d.value > 0) tb += "+" + (d.value).ToString("0.00");
-                if (d.value < 0) tb += (d.value).ToString("0.00");
+                if (b.value > 0) tb += "+" + (b.value / 1000f).ToString("0.00") + "x^2";
+                if (b.value < 0) tb += (b.value / 1000f).ToString("0.00") + "x^2";
+                if (c.value > 0) tb += "+" + (c.value / 1000f).ToString("0.00") + "x";
+                if (c.value < 0) tb += (c.value / 1000f).ToString("0.00") + "x";
+                if (d.value > 0) tb += "+" + (d.value / 1000f).ToString("0.00");
+                if (d.value < 0) tb += (d.value / 1000f).ToString("0.00");
                 break;
         }
         functionText.text = tb;
@@ -291,7 +291,7 @@ public class CurveController : MonoBehaviour
 
     private float Y(float x)
     {
-        return (float)levels[currentLevelIndex].applyLevelFunction(x, a.value, b.value, c.value, d.value);
+        return (float)levels[currentLevelIndex].applyLevelFunction(x, a.value / 1000f, b.value / 1000f, c.value / 1000f, d.value / 1000f);
     }
 
     private void loadLevel(Level level)
@@ -300,15 +300,15 @@ public class CurveController : MonoBehaviour
         switch (function)
         {
             case Function.Sine:
-                a.value = 1;
-                b.value = 1;
+                a.value = 1000;
+                b.value = 1000;
                 c.value = 0;
                 d.value = 0;
                 break;
             case Function.Linear:
             case Function.Square:
             case Function.Cubic:
-                a.value = 1;
+                a.value = 1000;
                 b.value = 0;
                 c.value = 0;
                 d.value = 0;
@@ -386,7 +386,7 @@ public class CurveController : MonoBehaviour
     {
         soundSystem.GetComponent<AudioSource>().PlayOneShot(Resources.Load<AudioClip>("Sounds/collectstar"));
         Vector3 pos = gameObject.transform.position;
-        double distance = levels[currentLevelIndex].DistanceToCurve(pos, a.value, b.value, c.value, d.value);
+        double distance = levels[currentLevelIndex].DistanceToCurve(pos, a.value / 1000f, b.value / 1000f, c.value / 1000f, d.value / 1000f);
         Destroy(gameObject);
         collectedStars++;
         int starpoints = Mathf.Max(100 - (int)(100 * distance), 0);
