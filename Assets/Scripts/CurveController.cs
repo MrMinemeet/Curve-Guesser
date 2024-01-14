@@ -40,6 +40,7 @@ public class CurveController : MonoBehaviour
     private TextMeshProUGUI failsText;
     private TextMeshProUGUI globalScoreText;
     private TextMeshProUGUI globalFailsText;
+    private TextMeshProUGUI functionText;
 
     private TextMeshProUGUI levelFinishedText;
     private GameObject nextLevelButton;
@@ -89,6 +90,7 @@ public class CurveController : MonoBehaviour
         failsText = GameObject.Find("LevelFinishedUI/FailsText").GetComponent<TextMeshProUGUI>();
         globalScoreText = GameObject.Find("UI/ScoreText").GetComponent<TextMeshProUGUI>();
         globalFailsText = GameObject.Find("UI/FailsText").GetComponent<TextMeshProUGUI>();
+        functionText = GameObject.Find("UI/Function").GetComponent<TextMeshProUGUI>();
 
         levelFinishedText = GameObject.Find("LevelFinishedUI/NonFunctional/LEVEL DONE").GetComponent<TextMeshProUGUI>();
         nextLevelButton = GameObject.Find("LevelFinishedUI/NextLevelButton");
@@ -131,24 +133,45 @@ public class CurveController : MonoBehaviour
             case Function.Sine:
                 a.minValue = -5;
                 a.maxValue = 5;
-                a.value = 1;
                 b.minValue = -Mathf.PI;
                 b.maxValue = Mathf.PI;
-                b.value = 1;
                 c.minValue = -Mathf.PI;
                 c.maxValue = Mathf.PI;
-                c.value = 0;
                 d.minValue = -4;
                 d.maxValue = 4;
-                d.value = 0;
                 break;
-            case Function.Linear: 
+            case Function.Linear:
+                a.minValue = -5;
+                a.maxValue = 5;
+                b.minValue = -5;
+                b.maxValue = 5;
+                c.minValue = 0;
+                c.maxValue = 0;
+                d.minValue = 0;
+                d.maxValue = 0;
                 break;
-            case Function.Square: 
+            case Function.Square:
+                a.minValue = -5;
+                a.maxValue = 5;
+                b.minValue = -8;
+                b.maxValue = 8;
+                c.minValue = -5;
+                c.maxValue = 5;
+                d.minValue = 0;
+                d.maxValue = 0;
                 break;
-            case Function.Cubic: 
+            case Function.Cubic:
+                a.minValue = -5;
+                a.maxValue = 5;
+                b.minValue = -10;
+                b.maxValue = 10;
+                c.minValue = -8;
+                c.maxValue = 8;
+                d.minValue = -5;
+                d.maxValue = 5;
                 break;
         }
+
         placedElements = new List<GameObject>();
         loadLevel(levels[currentLevelIndex]);
     }
@@ -168,6 +191,47 @@ public class CurveController : MonoBehaviour
             float y = Y(x);
             lineRenderer.SetPosition(i, new(x, y, 0));
         }
+        string tb = "";
+        switch (function)
+        {
+            case Function.Sine:
+                if(a.value != 1) tb += (a.value).ToString("0.00") + "*";
+                tb += "sin(";
+                if(b.value != 1) tb += (b.value).ToString("0.00") + "*";
+                tb += "x";
+                if(c.value > 0) tb += "+" + (c.value).ToString("0.00");
+                if(c.value < 0) tb += (c.value).ToString("0.00");
+                tb += ")";
+                if(d.value > 0) tb += "+" + (d.value).ToString("0.00");
+                if(d.value < 0) tb += (d.value).ToString("0.00");
+                
+                break;
+            case Function.Linear:
+                if(a.value != 1) tb += (a.value).ToString("0.00") + "*";
+                tb += "x";
+                if (b.value > 0) tb += "+" + (b.value).ToString("0.00");
+                if (b.value < 0) tb += (b.value).ToString("0.00");
+                break;
+            case Function.Square:
+                if (a.value != 1) tb += (a.value).ToString("0.00") + "*";
+                tb += "x^2";
+                if (b.value > 0) tb += "+" + (b.value).ToString("0.00") + "x";
+                if (b.value < 0) tb += (b.value).ToString("0.00") + "x";
+                if (c.value > 0) tb += "+" + (c.value).ToString("0.00");
+                if (c.value < 0) tb += (c.value).ToString("0.00");
+                break;
+            case Function.Cubic:
+                if (a.value != 1) tb += (a.value).ToString("0.00") + "*";
+                tb += "x^3";
+                if (b.value > 0) tb += "+" + (b.value).ToString("0.00") + "x^2";
+                if (b.value < 0) tb += (b.value).ToString("0.00") + "x^2";
+                if (c.value > 0) tb += "+" + (c.value).ToString("0.00") + "x";
+                if (c.value < 0) tb += (c.value).ToString("0.00") + "x";
+                if (d.value > 0) tb += "+" + (d.value).ToString("0.00");
+                if (d.value < 0) tb += (d.value).ToString("0.00");
+                break;
+        }
+        functionText.text = tb;
     }
 
     public void Launch()
@@ -222,6 +286,24 @@ public class CurveController : MonoBehaviour
 
     private void loadLevel(Level level)
     {
+
+        switch (function)
+        {
+            case Function.Sine:
+                a.value = 1;
+                b.value = 1;
+                c.value = 0;
+                d.value = 0;
+                break;
+            case Function.Linear:
+            case Function.Square:
+            case Function.Cubic:
+                a.value = 1;
+                b.value = 0;
+                c.value = 0;
+                d.value = 0;
+                break;
+        }
         parA.SetActive(level.parameters.Contains(Parameter.a));
         parAName.SetActive(level.parameters.Contains(Parameter.a));
         parB.SetActive(level.parameters.Contains(Parameter.b));

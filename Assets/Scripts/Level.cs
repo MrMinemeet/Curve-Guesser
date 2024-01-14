@@ -37,12 +37,31 @@ class Level
         this.hint = hint;
         this.parameters = parameters.ToHashSet();
     }
+    private static Vector2[] empty = new Vector2[0];
 
     //add levels here
     public static List<Level> levels = new()
     {
-        new Level(Difficulty.Tutorial, Function.Sine, "This is a sine function, it represents a wave. You can change the amplitude of the wave with the parameter a.", new Vector2[]{new(-1,-1), new(0,0), new(1,1)}, new Vector2[]{new(0,3), new(0,-3)}, Parameter.a),
-        new Level(Difficulty.Tutorial, Function.Sine, null, new Vector2[]{new(-1,1), new(0,0), new(1,-1)}, new Vector2[]{new(0,3), new(0,-3)}, Parameter.a)
+        //Sine
+        //Tutorial
+        new Level(Difficulty.Tutorial, Function.Sine, "This is a sine function, it represents a wave. You can play around with the parameters and see what they do.", empty, empty, Parameter.a, Parameter.b, Parameter.c, Parameter.d),
+        new Level(Difficulty.Tutorial, Function.Sine, "Your Goal is to collect as many stars as you can. Hitting them closer to the center gains you more points.", new Vector2[]{ new(-Mathf.PI, 0), new(-Mathf.PI/2,-1), new(0,0), new(Mathf.PI / 2, 1), new(Mathf.PI, 0) }, empty),
+        new Level(Difficulty.Tutorial, Function.Sine, "You can change the amplitude of the wave with the parameter a.", new Vector2[]{new(-1,-1), new(0,0), new(1,1)}, empty, Parameter.a),
+        new Level(Difficulty.Tutorial, Function.Sine, "Crashing into an asteroid makes you fail the level. Try it.", empty, new Vector2[]{ new(5 * Mathf.PI / 2, 1) }, Parameter.a),
+        new Level(Difficulty.Tutorial, Function.Sine, null, new Vector2[]{new(-1,1), new(0,0), new(1,-1)}, new Vector2[]{new(0,3), new(0,-3)}, Parameter.a),
+
+        //Linear
+        //Tutorial
+        new Level(Difficulty.Tutorial, Function.Linear, "This is a linear function. You can play around with the parameters and see what they do.", empty, empty, Parameter.a, Parameter.b),
+        
+        //Square
+        //Tutorial
+        new Level(Difficulty.Tutorial, Function.Square, "This is a quare function. You can play around with the parameters and see what they do.", empty, empty, Parameter.a, Parameter.b, Parameter.c),
+        
+        //Cubic
+        //Tutorial
+        new Level(Difficulty.Tutorial, Function.Cubic, "This is a cubic function. You can play around with the parameters and see what they do.", empty, empty, Parameter.a, Parameter.b, Parameter.c, Parameter.d),
+
     };
 
     public double applyLevelFunction(double x, double a, double b, double c, double d) => func(x, a, b, c, d);
