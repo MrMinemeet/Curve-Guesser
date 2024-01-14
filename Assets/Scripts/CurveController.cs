@@ -68,6 +68,9 @@ public class CurveController : MonoBehaviour
     private int globalScore;
     private int globalFails;
 
+    private GameObject helpUI;
+    private TextMeshProUGUI helpUItext;
+
     void Start()
     {
         soundSystem = GameObject.Find("SoundSystem");
@@ -91,6 +94,10 @@ public class CurveController : MonoBehaviour
         nextLevelButton = GameObject.Find("LevelFinishedUI/NextLevelButton");
         trackScoreText = GameObject.Find("LevelFinishedUI/TrackScoreText");
 
+        helpUI = GameObject.Find("HelpUI");
+        helpUItext = GameObject.Find("HelpUI/Bubble/Text (TMP)").GetComponent<TextMeshProUGUI>();
+        helpUI.SetActive(false);
+
         levelFinishedUI.SetActive(false);
 
         difficulty = LevelSelector.difficulty;
@@ -98,18 +105,8 @@ public class CurveController : MonoBehaviour
         lineRenderer = GetComponent<LineRenderer>();
         levels = Level.levels.Where(level => level.difficulty == difficulty && level.function == function).ToList();
         currentLevelIndex = LevelSelector.LoadedLevel;
-        if (currentLevelIndex == levels.Count)
-        {
-            currentLevelIndex = 0;
-            globalScore = 0;
-            globalFails = 0;
-            TrackData.Set(new TrackInfo(difficulty, function, 0, 0, 0));
-        } 
-        else
-        {
-            globalScore = LevelSelector.LoadedScore;
-            globalFails = LevelSelector.LoadedFails;
-        }
+        globalScore = LevelSelector.LoadedScore;
+        globalFails = LevelSelector.LoadedFails;
         globalFailsText.text = "Fails: " + globalFails;
         globalScoreText.text = "Score: " + globalScore;
 
@@ -259,6 +256,12 @@ public class CurveController : MonoBehaviour
         collectedStars = 0;
         levelScore = 0;
         TrackData.Set(new TrackInfo(difficulty, function, currentLevelIndex, globalScore, globalFails));
+        if(level.hint != null)
+        {
+            helpUI.SetActive(true);
+            helpUItext.text = level.hint;
+            UI.SetActive(false);
+        }
     }
 
     private void loadNextScreen()
@@ -341,5 +344,12 @@ public class CurveController : MonoBehaviour
         soundSystem.GetComponent<AudioSource>().PlayOneShot(Resources.Load<AudioClip>("Sounds/buttonpress"));
         SceneManager.LoadScene("Scenes/MainMenu", LoadSceneMode.Single);
         TrackData.Set(new TrackInfo(difficulty, function, ++currentLevelIndex, globalScore, globalFails));
+    }
+
+    public void Roger()
+    {
+        soundSystem.GetComponent<AudioSource>().PlayOneShot(Resources.Load<AudioClip>("Sounds/buttonpress"));
+        helpUI.SetActive(false);
+        UI.SetActive(true);
     }
 }

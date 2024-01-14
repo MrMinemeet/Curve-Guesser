@@ -1,3 +1,4 @@
+using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -23,6 +24,8 @@ public class LevelSelector : MonoBehaviour
     private static Color yellow = new(0.925f, 1f, 0f);
     private static Color orange = new(1f, 0.5f, 0f);
 
+    private GameObject loadGameUI;
+
 
     private GameObject soundSystem;
 
@@ -41,6 +44,9 @@ public class LevelSelector : MonoBehaviour
         MediumText = GameObject.Find("DifficultyGrid/Medium/Text (TMP)").GetComponent<TextMeshProUGUI>();
         HardText = GameObject.Find("DifficultyGrid/Hard/Text (TMP)").GetComponent<TextMeshProUGUI>();
         ExpertText = GameObject.Find("DifficultyGrid/Expert/Text (TMP)").GetComponent<TextMeshProUGUI>();
+
+        loadGameUI = GameObject.Find("Canvas/LoadGame");
+        loadGameUI.SetActive(false);
 }
 
     public void Sine()
@@ -147,23 +153,36 @@ public class LevelSelector : MonoBehaviour
     {
         soundSystem.GetComponent<AudioSource>().PlayOneShot(Resources.Load<AudioClip>("Sounds/buttonpress"));
         TrackInfo info = TrackData.Get(difficulty, function);
-        if(info == null)
+        if(info == null || Level.levels.Where(level => level.difficulty == difficulty && level.function == function).ToList().Count == info.currentLevel)
         {
+            TrackData.Set(new TrackInfo(difficulty, function, 0, 0, 0));
             LoadedFails = 0;
             LoadedScore = 0;
             LoadedLevel = 0;
+            SceneManager.LoadScene("Scenes/GameScene", LoadSceneMode.Single);
         }
         else
         {
-            Debug.Log(info.currentLevel);
-            Debug.Log(info.score);
-            Debug.Log(info.fails);
-            LoadedFails = info.fails;
-            LoadedScore = info.score;
-            LoadedLevel = info.currentLevel;
+            loadGameUI.SetActive(true);
         }
+    }
+
+    public void Continue()
+    {
+        soundSystem.GetComponent<AudioSource>().PlayOneShot(Resources.Load<AudioClip>("Sounds/buttonpress"));
+        TrackInfo info = TrackData.Get(difficulty, function);
+        LoadedFails = info.fails;
+        LoadedScore = info.score;
+        LoadedLevel = info.currentLevel;
         SceneManager.LoadScene("Scenes/GameScene", LoadSceneMode.Single);
+    }
 
-
+    public void NewGame()
+    {
+        soundSystem.GetComponent<AudioSource>().PlayOneShot(Resources.Load<AudioClip>("Sounds/buttonpress"));
+        LoadedFails = 0;
+        LoadedScore = 0;
+        LoadedLevel = 0;
+        SceneManager.LoadScene("Scenes/GameScene", LoadSceneMode.Single);
     }
 }
