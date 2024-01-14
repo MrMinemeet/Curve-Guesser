@@ -31,6 +31,8 @@ public class LevelSelector : MonoBehaviour
 
     private void Start()
     {
+        difficulty = Difficulty.Tutorial;
+        function = Function.Sine;
         soundSystem = GameObject.Find("SoundSystem");
         DontDestroyOnLoad(soundSystem);
 
@@ -51,6 +53,7 @@ public class LevelSelector : MonoBehaviour
 
     public void Sine()
     {
+        soundSystem.GetComponent<AudioSource>().PlayOneShot(Resources.Load<AudioClip>("Sounds/buttonpress"));
         function = Function.Sine;
         SineText.color = orange;
         LinearText.color = yellow;

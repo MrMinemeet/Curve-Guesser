@@ -48,19 +48,51 @@ class Level
         new Level(Difficulty.Tutorial, Function.Sine, "Your Goal is to collect as many stars as you can. Hitting them closer to the center gains you more points.", new Vector2[]{ new(-Mathf.PI, 0), new(-Mathf.PI/2,-1), new(0,0), new(Mathf.PI / 2, 1), new(Mathf.PI, 0) }, empty),
         new Level(Difficulty.Tutorial, Function.Sine, "You can change the amplitude of the wave with the parameter a.", new Vector2[]{new(-1,-1), new(0,0), new(1,1)}, empty, Parameter.a),
         new Level(Difficulty.Tutorial, Function.Sine, "Crashing into an asteroid makes you fail the level. Try it.", empty, new Vector2[]{ new(5 * Mathf.PI / 2, 1) }, Parameter.a),
-        new Level(Difficulty.Tutorial, Function.Sine, null, new Vector2[]{new(-1,1), new(0,0), new(1,-1)}, new Vector2[]{new(0,3), new(0,-3)}, Parameter.a),
+        new Level(Difficulty.Tutorial, Function.Sine, null, new Vector2[]{new(-1,1), new(0,0), new(1,-1)}, new Vector2[]{new(-Mathf.PI,-1), new(Mathf.PI, 1) }, Parameter.a),
+         //Easy
+        new Level(Difficulty.Easy, Function.Sine, "This Track is still empty.", empty, empty),
+        //Medium
+        new Level(Difficulty.Medium, Function.Sine, "This Track is still empty.", empty, empty),
+        //Hard
+        new Level(Difficulty.Hard, Function.Sine, "This Track is still empty.", empty, empty),
+        //Expert
+        new Level(Difficulty.Expert, Function.Sine, "This Track is still empty.", empty, empty),
 
         //Linear
         //Tutorial
         new Level(Difficulty.Tutorial, Function.Linear, "This is a linear function. You can play around with the parameters and see what they do.", empty, empty, Parameter.a, Parameter.b),
+        //Easy
+        new Level(Difficulty.Easy, Function.Linear, "This Track is still empty.", empty, empty),
+        //Medium
+        new Level(Difficulty.Medium, Function.Linear, "This Track is still empty.", empty, empty),
+        //Hard
+        new Level(Difficulty.Hard, Function.Linear, "This Track is still empty.", empty, empty),
+        //Expert
+        new Level(Difficulty.Expert, Function.Linear, "This Track is still empty.", empty, empty),
         
         //Square
         //Tutorial
         new Level(Difficulty.Tutorial, Function.Square, "This is a quare function. You can play around with the parameters and see what they do.", empty, empty, Parameter.a, Parameter.b, Parameter.c),
+        //Easy
+        new Level(Difficulty.Easy, Function.Square, "This Track is still empty.", empty, empty),
+        //Medium
+        new Level(Difficulty.Medium, Function.Square, "This Track is still empty.", empty, empty),
+        //Hard
+        new Level(Difficulty.Hard, Function.Square, "This Track is still empty.", empty, empty),
+        //Expert
+        new Level(Difficulty.Expert, Function.Square, "This Track is still empty.", empty, empty),
         
         //Cubic
         //Tutorial
         new Level(Difficulty.Tutorial, Function.Cubic, "This is a cubic function. You can play around with the parameters and see what they do.", empty, empty, Parameter.a, Parameter.b, Parameter.c, Parameter.d),
+        //Easy
+        new Level(Difficulty.Easy, Function.Cubic, "This Track is still empty.", empty, empty),
+        //Medium
+        new Level(Difficulty.Medium, Function.Cubic, "This Track is still empty.", empty, empty),
+        //Hard
+        new Level(Difficulty.Hard, Function.Cubic, "This Track is still empty.", empty, empty),
+        //Expert
+        new Level(Difficulty.Expert, Function.Cubic, "This Track is still empty.", empty, empty),
 
     };
 

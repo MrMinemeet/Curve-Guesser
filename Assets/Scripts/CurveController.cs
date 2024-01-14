@@ -72,6 +72,9 @@ public class CurveController : MonoBehaviour
     private GameObject helpUI;
     private TextMeshProUGUI helpUItext;
 
+    private GameObject overlay_PI;
+    private GameObject overlay_NUMBER;
+
     void Start()
     {
         soundSystem = GameObject.Find("SoundSystem");
@@ -95,6 +98,9 @@ public class CurveController : MonoBehaviour
         levelFinishedText = GameObject.Find("LevelFinishedUI/NonFunctional/LEVEL DONE").GetComponent<TextMeshProUGUI>();
         nextLevelButton = GameObject.Find("LevelFinishedUI/NextLevelButton");
         trackScoreText = GameObject.Find("LevelFinishedUI/TrackScoreText");
+
+        overlay_PI = GameObject.Find("Background/Overlay1");
+        overlay_NUMBER = GameObject.Find("Background/Overlay2");
 
         helpUI = GameObject.Find("HelpUI");
         helpUItext = GameObject.Find("HelpUI/Bubble/Text (TMP)").GetComponent<TextMeshProUGUI>();
@@ -139,6 +145,7 @@ public class CurveController : MonoBehaviour
                 c.maxValue = Mathf.PI;
                 d.minValue = -4;
                 d.maxValue = 4;
+                overlay_NUMBER.SetActive(false);
                 break;
             case Function.Linear:
                 a.minValue = -5;
@@ -149,6 +156,7 @@ public class CurveController : MonoBehaviour
                 c.maxValue = 0;
                 d.minValue = 0;
                 d.maxValue = 0;
+                overlay_PI.SetActive(false);
                 break;
             case Function.Square:
                 a.minValue = -5;
@@ -159,6 +167,7 @@ public class CurveController : MonoBehaviour
                 c.maxValue = 5;
                 d.minValue = 0;
                 d.maxValue = 0;
+                overlay_PI.SetActive(false);
                 break;
             case Function.Cubic:
                 a.minValue = -5;
@@ -169,6 +178,7 @@ public class CurveController : MonoBehaviour
                 c.maxValue = 8;
                 d.minValue = -5;
                 d.maxValue = 5;
+                overlay_PI.SetActive(false);
                 break;
         }
 
