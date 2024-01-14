@@ -61,6 +61,19 @@ class Level
     private static double linear(double x, double a, double b, double c, double d) => a * x + b;
     private static double square(double x, double a, double b, double c, double d) => a * x * x + linear(x, b, c, c, d);
     private static double cubic(double x, double a, double b, double c, double d) => a * x * x * x + square(x, b, c, d, 0);
+
+    public double DistanceToCurve(Vector2 point, double a, double b, double c, double d)
+    {
+        double minDistance = Double.PositiveInfinity;
+        for (double x = point.x - 2; x < point.x + 2; x+=0.01)
+        {
+            double y = applyLevelFunction(x, a, b, c, d);
+            double distance = (point - new Vector2((float)x, (float)y)).magnitude;
+            if (distance < minDistance) minDistance = distance;
+;       }
+
+        return minDistance;
+    }
 }
 
 public enum Difficulty

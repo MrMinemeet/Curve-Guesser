@@ -20,9 +20,6 @@ public class CurveController : MonoBehaviour
     private float end = 10f;
     private Coroutine rocketAnimation;
 
-    private List<Level> levels;
-    private int currentLevelIndex;
-
     private Slider a;
     private Slider b;
     private Slider c;
@@ -41,6 +38,12 @@ public class CurveController : MonoBehaviour
     private TextMeshProUGUI starsText;
     private TextMeshProUGUI scoreText;
     private TextMeshProUGUI failsText;
+    private TextMeshProUGUI globalScoreText;
+    private TextMeshProUGUI globalFailsText;
+
+    private TextMeshProUGUI levelFinishedText;
+    private GameObject nextLevelButton;
+    private GameObject trackScoreText;
 
     private bool isLaunched = false;
 
@@ -56,8 +59,14 @@ public class CurveController : MonoBehaviour
     private GameObject levelFinishedUI;
     private GameObject UI;
 
+
+    private List<Level> levels;
+    private int currentLevelIndex;
     private int fails = 0;
+    private int levelScore = 0;
     private int collectedStars = 0;
+    private int globalScore;
+    private int globalFails;
 
     void Start()
     {
@@ -75,6 +84,12 @@ public class CurveController : MonoBehaviour
         starsText = GameObject.Find("LevelFinishedUI/StarsText").GetComponent<TextMeshProUGUI>();
         scoreText = GameObject.Find("LevelFinishedUI/ScoreText").GetComponent<TextMeshProUGUI>();
         failsText = GameObject.Find("LevelFinishedUI/FailsText").GetComponent<TextMeshProUGUI>();
+        globalScoreText = GameObject.Find("UI/ScoreText").GetComponent<TextMeshProUGUI>();
+        globalFailsText = GameObject.Find("UI/FailsText").GetComponent<TextMeshProUGUI>();
+
+        levelFinishedText = GameObject.Find("LevelFinishedUI/NonFunctional/LEVEL DONE").GetComponent<TextMeshProUGUI>();
+        nextLevelButton = GameObject.Find("LevelFinishedUI/NextLevelButton");
+        trackScoreText = GameObject.Find("LevelFinishedUI/TrackScoreText");
 
         levelFinishedUI.SetActive(false);
 
@@ -82,7 +97,21 @@ public class CurveController : MonoBehaviour
         function = LevelSelector.function;
         lineRenderer = GetComponent<LineRenderer>();
         levels = Level.levels.Where(level => level.difficulty == difficulty && level.function == function).ToList();
-        currentLevelIndex = 0;
+        currentLevelIndex = LevelSelector.LoadedLevel;
+        if (currentLevelIndex == levels.Count)
+        {
+            currentLevelIndex = 0;
+            globalScore = 0;
+            globalFails = 0;
+            TrackData.Set(new TrackInfo(difficulty, function, 0, 0, 0));
+        } 
+        else
+        {
+            globalScore = LevelSelector.LoadedScore;
+            globalFails = LevelSelector.LoadedFails;
+        }
+        globalFailsText.text = "Fails: " + globalFails;
+        globalScoreText.text = "Score: " + globalScore;
 
 
         parA = GameObject.Find("UI/SliderGroup/Parameter A");
@@ -149,6 +178,14 @@ public class CurveController : MonoBehaviour
         if (!isLaunched)
         {
             soundSystem.GetComponent<AudioSource>().PlayOneShot(Resources.Load<AudioClip>("Sounds/rocketlaunch"));
+            parA.SetActive(false);
+            parAName.SetActive(false);
+            parB.SetActive(false);
+            parBName.SetActive(false);
+            parC.SetActive(false);
+            parCName.SetActive(false);
+            parD.SetActive(false);
+            parDName.SetActive(false);
             isLaunched = true;
             rocketAnimation = StartCoroutine(animate());
         }
@@ -220,31 +257,58 @@ public class CurveController : MonoBehaviour
         isLaunched = false;
         rocketAnimation = null;
         collectedStars = 0;
+        levelScore = 0;
+        TrackData.Set(new TrackInfo(difficulty, function, currentLevelIndex, globalScore, globalFails));
     }
 
     private void loadNextScreen()
     {
         soundSystem.GetComponent<AudioSource>().PlayOneShot(Resources.Load<AudioClip>("Sounds/winning"));
+        
         levelFinishedUI.SetActive(true);
         UI.SetActive(false);
-        starsText.text = "Stars: " + collectedStars + "/" + levels[currentLevelIndex].points.Count;
-        failsText.text = "Fails: " + fails;
+        if (currentLevelIndex == levels.Count - 1)
+        {
+            levelFinishedText.text = "Track Complete";
+            nextLevelButton.SetActive(false);
+            starsText.text = "Stars: " + collectedStars + "/" + levels[currentLevelIndex].points.Count;
+            failsText.text = "Fails: " + fails;
+            scoreText.text = "Score: " + levelScore;
+            trackScoreText.SetActive(true);
+            trackScoreText.GetComponent<TextMeshProUGUI>().text = "Track Score\n" + globalScore;
+        }
+        else
+        {
+            nextLevelButton.SetActive(true);
+            starsText.text = "Stars: " + collectedStars + "/" + levels[currentLevelIndex].points.Count;
+            failsText.text = "Fails: " + fails;
+            scoreText.text = "Score: " + levelScore;
+            trackScoreText.SetActive(false);
+        }
     }
 
     public void OnPointCollision(GameObject gameObject)
     {
         soundSystem.GetComponent<AudioSource>().PlayOneShot(Resources.Load<AudioClip>("Sounds/collectstar"));
         Vector3 pos = gameObject.transform.position;
-        Debug.Log(pos);
+        double distance = levels[currentLevelIndex].DistanceToCurve(pos, a.value, b.value, c.value, d.value);
         Destroy(gameObject);
         collectedStars++;
+        int starpoints = Mathf.Max(100 - (int)(100 * distance), 0);
+        levelScore += starpoints;
+        globalScore += starpoints;
+        globalScoreText.text = "Score: " + globalScore;
     }
 
     public void OnObstacleCollision()
     {
         soundSystem.GetComponent<AudioSource>().PlayOneShot(Resources.Load<AudioClip>("Sounds/rockethit"));
-        loadLevel(levels[currentLevelIndex]);
         fails++;
+        globalFails++;
+        globalScore -= levelScore;
+        globalScoreText.text = "Score: " + globalScore;
+        globalFailsText.text = "Fails: " + globalFails;
+        loadLevel(levels[currentLevelIndex]);
     }
 
 
@@ -253,23 +317,29 @@ public class CurveController : MonoBehaviour
     public void NextLevel()
     {
         soundSystem.GetComponent<AudioSource>().PlayOneShot(Resources.Load<AudioClip>("Sounds/buttonpress"));
-        loadLevel(levels[++currentLevelIndex]);
         levelFinishedUI.SetActive(false);
         UI.SetActive(true);
+        loadLevel(levels[++currentLevelIndex]);
+        fails = 0;
     }
 
     public void Retry()
     {
         soundSystem.GetComponent<AudioSource>().PlayOneShot(Resources.Load<AudioClip>("Sounds/buttonpress"));
-        loadLevel(levels[currentLevelIndex]);
         levelFinishedUI.SetActive(false);
         UI.SetActive(true);
         fails++;
+        globalFails++;
+        globalFailsText.text = "Fails: " + globalFails;
+        globalScore -= levelScore;
+        globalScoreText.text = "Score: " + globalScore;
+        loadLevel(levels[currentLevelIndex]);
     }
 
     public void MainMenu()
     {
         soundSystem.GetComponent<AudioSource>().PlayOneShot(Resources.Load<AudioClip>("Sounds/buttonpress"));
         SceneManager.LoadScene("Scenes/MainMenu", LoadSceneMode.Single);
+        TrackData.Set(new TrackInfo(difficulty, function, ++currentLevelIndex, globalScore, globalFails));
     }
 }

@@ -6,6 +6,9 @@ public class LevelSelector : MonoBehaviour
 {
     public static Difficulty difficulty = Difficulty.Tutorial;
     public static Function function = Function.Sine;
+    public static int LoadedScore;
+    public static int LoadedFails;
+    public static int LoadedLevel;
     private static TextMeshProUGUI SineText;
     private static TextMeshProUGUI LinearText;
     private static TextMeshProUGUI SquareText;
@@ -143,6 +146,24 @@ public class LevelSelector : MonoBehaviour
     public void StartGame()
     {
         soundSystem.GetComponent<AudioSource>().PlayOneShot(Resources.Load<AudioClip>("Sounds/buttonpress"));
+        TrackInfo info = TrackData.Get(difficulty, function);
+        if(info == null)
+        {
+            LoadedFails = 0;
+            LoadedScore = 0;
+            LoadedLevel = 0;
+        }
+        else
+        {
+            Debug.Log(info.currentLevel);
+            Debug.Log(info.score);
+            Debug.Log(info.fails);
+            LoadedFails = info.fails;
+            LoadedScore = info.score;
+            LoadedLevel = info.currentLevel;
+        }
         SceneManager.LoadScene("Scenes/GameScene", LoadSceneMode.Single);
+
+
     }
 }
