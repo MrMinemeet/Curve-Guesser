@@ -10,6 +10,18 @@ public class LevelSelector : MonoBehaviour
     public static int LoadedScore;
     public static int LoadedFails;
     public static int LoadedLevel;
+
+    private static GameObject SineButton;
+    private static GameObject LinearButton;
+    private static GameObject SquareButton;
+    private static GameObject CubicButton;
+
+    private static GameObject TutorialButton;
+    private static GameObject EasyButton;
+    private static GameObject MediumButton;
+    private static GameObject HardButton;
+    private static GameObject ExpertButton;
+
     private static TextMeshProUGUI SineText;
     private static TextMeshProUGUI LinearText;
     private static TextMeshProUGUI SquareText;
@@ -36,6 +48,17 @@ public class LevelSelector : MonoBehaviour
         soundSystem = GameObject.Find("SoundSystem");
         DontDestroyOnLoad(soundSystem);
 
+        SineButton = GameObject.Find("FunctionGrid/Sine");
+        LinearButton = GameObject.Find("FunctionGrid/Linear");
+        SquareButton = GameObject.Find("FunctionGrid/Square");
+        CubicButton = GameObject.Find("FunctionGrid/Cubic");
+
+        TutorialButton = GameObject.Find("DifficultyGrid/Tutorial");
+        EasyButton = GameObject.Find("DifficultyGrid/Easy");
+        MediumButton = GameObject.Find("DifficultyGrid/Medium");
+        HardButton = GameObject.Find("DifficultyGrid/Hard");
+        ExpertButton = GameObject.Find("DifficultyGrid/Expert");
+
         SineText = GameObject.Find("FunctionGrid/Sine/Text (TMP)").GetComponent<TextMeshProUGUI>();
         LinearText = GameObject.Find("FunctionGrid/Linear/Text (TMP)").GetComponent<TextMeshProUGUI>();
         SquareText = GameObject.Find("FunctionGrid/Square/Text (TMP)").GetComponent<TextMeshProUGUI>();
@@ -47,9 +70,23 @@ public class LevelSelector : MonoBehaviour
         HardText = GameObject.Find("DifficultyGrid/Hard/Text (TMP)").GetComponent<TextMeshProUGUI>();
         ExpertText = GameObject.Find("DifficultyGrid/Expert/Text (TMP)").GetComponent<TextMeshProUGUI>();
 
+        SetActiveDifficulties();
+
         loadGameUI = GameObject.Find("Canvas/LoadGame");
         loadGameUI.SetActive(false);
-}
+    }
+
+    private void SetActiveDifficulties()
+    {
+        LinearButton.SetActive(TrackData.finishedTracks.Contains((Difficulty.Tutorial, Function.Sine)));
+        SquareButton.SetActive(TrackData.finishedTracks.Contains((Difficulty.Tutorial, Function.Linear)));
+        CubicButton.SetActive(TrackData.finishedTracks.Contains((Difficulty.Tutorial, Function.Square)));
+
+        EasyButton.SetActive(TrackData.finishedTracks.Contains((Difficulty.Tutorial, function)));
+        MediumButton.SetActive(TrackData.finishedTracks.Contains((Difficulty.Easy, function)));
+        HardButton.SetActive(TrackData.finishedTracks.Contains((Difficulty.Medium, function)));
+        ExpertButton.SetActive(TrackData.finishedTracks.Contains((Difficulty.Hard, function)));
+    }
 
     public void Sine()
     {
@@ -59,6 +96,8 @@ public class LevelSelector : MonoBehaviour
         LinearText.color = yellow;
         SquareText.color = yellow;
         CubicText.color = yellow;
+
+        SetActiveDifficulties();
     }
 
     public void Linear()
@@ -69,6 +108,8 @@ public class LevelSelector : MonoBehaviour
         LinearText.color = orange;
         SquareText.color = yellow;
         CubicText.color = yellow;
+
+        SetActiveDifficulties();
     }
 
     public void Square()
@@ -79,6 +120,8 @@ public class LevelSelector : MonoBehaviour
         LinearText.color = yellow;
         SquareText.color = orange;
         CubicText.color = yellow;
+
+        SetActiveDifficulties();
     }
 
     public void Cubic()
@@ -89,6 +132,8 @@ public class LevelSelector : MonoBehaviour
         LinearText.color = yellow;
         SquareText.color = yellow;
         CubicText.color = orange;
+
+        SetActiveDifficulties();
     }
 
     public void Tutorial()

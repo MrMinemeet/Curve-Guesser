@@ -436,6 +436,10 @@ public class CurveController : MonoBehaviour
         soundSystem.GetComponent<AudioSource>().PlayOneShot(Resources.Load<AudioClip>("Sounds/buttonpress"));
         SceneManager.LoadScene("Scenes/MainMenu", LoadSceneMode.Single);
         TrackData.Set(new TrackInfo(difficulty, function, ++currentLevelIndex, globalScore, globalFails));
+        if(currentLevelIndex == levels.Count)
+        {
+            TrackData.TrackFinished(difficulty, function);
+        }
     }
 
     public void Roger()
