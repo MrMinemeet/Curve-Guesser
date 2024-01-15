@@ -129,7 +129,6 @@ public class CurveController : MonoBehaviour
             soundSystem.GetComponent<AudioSource>().volume = SoundSlider.value;
             TrackData.Set(new Settings(ShowGraph, ShowGridToggle.isOn, ShowEquation, SoundSlider.value));
         });
-        Debug.Log("ShowGraph " + ShowGraph);
         ShowGraph = ShowGraphToggle.isOn;
         lineRenderer.enabled = ShowGraphToggle.isOn;
         ShowEquation = ShowEquationToggle.isOn;
@@ -229,6 +228,23 @@ public class CurveController : MonoBehaviour
                 d.maxValue = 5000;
                 overlay_NUMBER.SetActive(ShowGridToggle.isOn);
                 overlay_PI.SetActive(false);
+                break;
+        }
+        switch (function)
+        {
+            case Function.Sine:
+                a.value = 1000;
+                b.value = 1000;
+                c.value = 0;
+                d.value = 0;
+                break;
+            case Function.Linear:
+            case Function.Square:
+            case Function.Cubic:
+                a.value = 1000;
+                b.value = 0;
+                c.value = 0;
+                d.value = 0;
                 break;
         }
 
@@ -373,24 +389,6 @@ public class CurveController : MonoBehaviour
 
     private void loadLevel(Level level)
     {
-
-        switch (function)
-        {
-            case Function.Sine:
-                a.value = 1000;
-                b.value = 1000;
-                c.value = 0;
-                d.value = 0;
-                break;
-            case Function.Linear:
-            case Function.Square:
-            case Function.Cubic:
-                a.value = 1000;
-                b.value = 0;
-                c.value = 0;
-                d.value = 0;
-                break;
-        }
         parA.SetActive(level.parameters.Contains(Parameter.a));
         parAName.SetActive(level.parameters.Contains(Parameter.a));
         parB.SetActive(level.parameters.Contains(Parameter.b));
@@ -492,6 +490,23 @@ public class CurveController : MonoBehaviour
         levelFinishedUI.SetActive(false);
         UI.SetActive(true);
         loadLevel(levels[++currentLevelIndex]);
+        switch (function)
+        {
+            case Function.Sine:
+                a.value = 1000;
+                b.value = 1000;
+                c.value = 0;
+                d.value = 0;
+                break;
+            case Function.Linear:
+            case Function.Square:
+            case Function.Cubic:
+                a.value = 1000;
+                b.value = 0;
+                c.value = 0;
+                d.value = 0;
+                break;
+        }
         fails = 0;
     }
 
@@ -513,7 +528,7 @@ public class CurveController : MonoBehaviour
         soundSystem.GetComponent<AudioSource>().PlayOneShot(Resources.Load<AudioClip>("Sounds/buttonpress"));
         SceneManager.LoadScene("Scenes/MainMenu", LoadSceneMode.Single);
         TrackData.Set(new TrackInfo(difficulty, function, ++currentLevelIndex, globalScore, globalFails));
-        if(currentLevelIndex == levels.Count)
+        if (currentLevelIndex == levels.Count)
         {
             TrackData.TrackFinished(difficulty, function);
         }
