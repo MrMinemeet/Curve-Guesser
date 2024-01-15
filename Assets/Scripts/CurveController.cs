@@ -59,6 +59,15 @@ public class CurveController : MonoBehaviour
 
     private GameObject levelFinishedUI;
     private GameObject UI;
+    private GameObject escapeMenu;
+    private bool wasHelpActive;
+
+    private Slider SoundSlider;
+    private Toggle ShowGraphToggle;
+    private Toggle ShowGridToggle;
+    private Toggle ShowEquationToggle;
+    private bool ShowGraph;
+    private bool ShowEquation;
 
 
     private List<Level> levels;
@@ -106,6 +115,34 @@ public class CurveController : MonoBehaviour
         helpUItext = GameObject.Find("HelpUI/Bubble/Text (TMP)").GetComponent<TextMeshProUGUI>();
         helpUI.SetActive(false);
 
+        SoundSlider = GameObject.Find("EscapeMenu/Box/Sound").GetComponent<Slider>();
+        ShowGraphToggle = GameObject.Find("EscapeMenu/Box/ShowGraph").GetComponent<Toggle>();
+        ShowGridToggle = GameObject.Find("EscapeMenu/Box/ShowGrid").GetComponent<Toggle>();
+        ShowEquationToggle = GameObject.Find("EscapeMenu/Box/ShowEquation").GetComponent<Toggle>();
+
+        soundSystem.GetComponent<AudioSource>().volume = SoundSlider.value;
+        SoundSlider.onValueChanged.AddListener(delegate
+        {
+            soundSystem.GetComponent<AudioSource>().volume = SoundSlider.value;
+        });
+        ShowGraph = ShowGraphToggle.isOn;
+        ShowEquation = ShowEquationToggle.isOn;
+        ShowGraphToggle.onValueChanged.AddListener(delegate {
+            ShowGraph = ShowGraphToggle.isOn;
+            lineRenderer.enabled = ShowGraphToggle.isOn;
+        });
+        ShowGridToggle.onValueChanged.AddListener(delegate {
+            overlay_PI.SetActive(ShowGridToggle.isOn && function == Function.Sine);   
+            overlay_NUMBER.SetActive(ShowGridToggle.isOn && function != Function.Sine);   
+        });
+        ShowEquationToggle.onValueChanged.AddListener(delegate {
+            ShowEquation = ShowEquationToggle.isOn;
+            functionText.text = "";
+        });
+
+        escapeMenu = GameObject.Find("EscapeMenu");
+        escapeMenu.SetActive(false);
+
         levelFinishedUI.SetActive(false);
 
         difficulty = LevelSelector.difficulty;
@@ -146,6 +183,7 @@ public class CurveController : MonoBehaviour
                 d.minValue = -4000;
                 d.maxValue = 4000;
                 overlay_NUMBER.SetActive(false);
+                overlay_PI.SetActive(ShowGridToggle.isOn);
                 break;
             case Function.Linear:
                 a.minValue = -5000;
@@ -156,6 +194,7 @@ public class CurveController : MonoBehaviour
                 c.maxValue = 0;
                 d.minValue = 0;
                 d.maxValue = 0;
+                overlay_NUMBER.SetActive(ShowGridToggle.isOn);
                 overlay_PI.SetActive(false);
                 break;
             case Function.Square:
@@ -167,6 +206,7 @@ public class CurveController : MonoBehaviour
                 c.maxValue = 5000;
                 d.minValue = 0;
                 d.maxValue = 0;
+                overlay_NUMBER.SetActive(ShowGridToggle.isOn);
                 overlay_PI.SetActive(false);
                 break;
             case Function.Cubic:
@@ -178,6 +218,7 @@ public class CurveController : MonoBehaviour
                 c.maxValue = 8000;
                 d.minValue = -5000;
                 d.maxValue = 5000;
+                overlay_NUMBER.SetActive(ShowGridToggle.isOn);
                 overlay_PI.SetActive(false);
                 break;
         }
@@ -188,60 +229,87 @@ public class CurveController : MonoBehaviour
 
     void FixedUpdate()
     {
+         
+    }
+
+    private void Update()
+    {
         Draw();
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            if(escapeMenu.activeSelf)
+            {
+                escapeMenu.SetActive(false);
+                helpUI.SetActive(wasHelpActive);
+                UI.SetActive(true);
+            }
+            else
+            {
+                escapeMenu.SetActive(true);
+                wasHelpActive = helpUI.activeSelf;
+                helpUI.SetActive(false);
+                UI.SetActive(false);
+            }
+        }
     }
 
     private void Draw()
     {
-        lineRenderer.positionCount = Points;
-        for(int i = 0; i < Points; i++)
+        if(ShowGraph)
         {
-            float progress = (float) i / (Points - 1);
-            float x = Mathf.Lerp(start, end, progress);
-            float y = Y(x);
-            lineRenderer.SetPosition(i, new(x, y, 0));
+            lineRenderer.positionCount = Points;
+            for (int i = 0; i < Points; i++)
+            {
+                float progress = (float)i / (Points - 1);
+                float x = Mathf.Lerp(start, end, progress);
+                float y = Y(x);
+                lineRenderer.SetPosition(i, new(x, y, 0));
+            }
         }
-        string tb = "";
-        switch (function)
+        if(ShowEquation)
         {
-            case Function.Sine:
-                if(a.value != 1000) tb += (a.value / 1000f).ToString("0.00") + "*";
-                tb += "sin(";
-                if(b.value != 1000) tb += (b.value / 1000f).ToString("0.00") + "*";
-                tb += "x";
-                if(c.value > 0) tb += "+" + (c.value / 1000f).ToString("0.00");
-                if(c.value < 0) tb += (c.value / 1000f).ToString("0.00");
-                tb += ")";
-                if(d.value > 0) tb += "+" + (d.value / 1000f).ToString("0.00");
-                if(d.value < 0) tb += (d.value / 1000f).ToString("0.00");
-                
-                break;
-            case Function.Linear:
-                if(a.value != 1000) tb += (a.value / 1000f).ToString("0.00") + "*";
-                tb += "x";
-                if (b.value > 0) tb += "+" + (b.value / 1000f).ToString("0.00");
-                if (b.value < 0) tb += (b.value / 1000f).ToString("0.00");
-                break;
-            case Function.Square:
-                if (a.value != 1000) tb += (a.value / 1000f).ToString("0.00") + "*";
-                tb += "x^2";
-                if (b.value > 0) tb += "+" + (b.value / 1000f).ToString("0.00") + "x";
-                if (b.value < 0) tb += (b.value / 1000f).ToString("0.00") + "x";
-                if (c.value > 0) tb += "+" + (c.value / 1000f).ToString("0.00");
-                if (c.value < 0) tb += (c.value / 1000f).ToString("0.00");
-                break;
-            case Function.Cubic:
-                if (a.value != 1000) tb += (a.value / 1000f).ToString("0.00") + "*";
-                tb += "x^3";
-                if (b.value > 0) tb += "+" + (b.value / 1000f).ToString("0.00") + "x^2";
-                if (b.value < 0) tb += (b.value / 1000f).ToString("0.00") + "x^2";
-                if (c.value > 0) tb += "+" + (c.value / 1000f).ToString("0.00") + "x";
-                if (c.value < 0) tb += (c.value / 1000f).ToString("0.00") + "x";
-                if (d.value > 0) tb += "+" + (d.value / 1000f).ToString("0.00");
-                if (d.value < 0) tb += (d.value / 1000f).ToString("0.00");
-                break;
+            string tb = "";
+            switch (function)
+            {
+                case Function.Sine:
+                    if (a.value != 1000) tb += (a.value / 1000f).ToString("0.00") + "*";
+                    tb += "sin(";
+                    if (b.value != 1000) tb += (b.value / 1000f).ToString("0.00") + "*";
+                    tb += "x";
+                    if (c.value > 0) tb += "+" + (c.value / 1000f).ToString("0.00");
+                    if (c.value < 0) tb += (c.value / 1000f).ToString("0.00");
+                    tb += ")";
+                    if (d.value > 0) tb += "+" + (d.value / 1000f).ToString("0.00");
+                    if (d.value < 0) tb += (d.value / 1000f).ToString("0.00");
+
+                    break;
+                case Function.Linear:
+                    if (a.value != 1000) tb += (a.value / 1000f).ToString("0.00") + "*";
+                    tb += "x";
+                    if (b.value > 0) tb += "+" + (b.value / 1000f).ToString("0.00");
+                    if (b.value < 0) tb += (b.value / 1000f).ToString("0.00");
+                    break;
+                case Function.Square:
+                    if (a.value != 1000) tb += (a.value / 1000f).ToString("0.00") + "*";
+                    tb += "x^2";
+                    if (b.value > 0) tb += "+" + (b.value / 1000f).ToString("0.00") + "x";
+                    if (b.value < 0) tb += (b.value / 1000f).ToString("0.00") + "x";
+                    if (c.value > 0) tb += "+" + (c.value / 1000f).ToString("0.00");
+                    if (c.value < 0) tb += (c.value / 1000f).ToString("0.00");
+                    break;
+                case Function.Cubic:
+                    if (a.value != 1000) tb += (a.value / 1000f).ToString("0.00") + "*";
+                    tb += "x^3";
+                    if (b.value > 0) tb += "+" + (b.value / 1000f).ToString("0.00") + "x^2";
+                    if (b.value < 0) tb += (b.value / 1000f).ToString("0.00") + "x^2";
+                    if (c.value > 0) tb += "+" + (c.value / 1000f).ToString("0.00") + "x";
+                    if (c.value < 0) tb += (c.value / 1000f).ToString("0.00") + "x";
+                    if (d.value > 0) tb += "+" + (d.value / 1000f).ToString("0.00");
+                    if (d.value < 0) tb += (d.value / 1000f).ToString("0.00");
+                    break;
+            }
+            functionText.text = tb;
         }
-        functionText.text = tb;
     }
 
     public void Launch()
@@ -442,10 +510,24 @@ public class CurveController : MonoBehaviour
         }
     }
 
+    public void MainMenuEscape()
+    {
+        soundSystem.GetComponent<AudioSource>().PlayOneShot(Resources.Load<AudioClip>("Sounds/buttonpress"));
+        SceneManager.LoadScene("Scenes/MainMenu", LoadSceneMode.Single);
+        TrackData.Set(new TrackInfo(difficulty, function, currentLevelIndex, globalScore, globalFails));
+    }
+
     public void Roger()
     {
         soundSystem.GetComponent<AudioSource>().PlayOneShot(Resources.Load<AudioClip>("Sounds/buttonpress"));
         helpUI.SetActive(false);
+        UI.SetActive(true);
+    }
+    public void Play()
+    {
+        soundSystem.GetComponent<AudioSource>().PlayOneShot(Resources.Load<AudioClip>("Sounds/buttonpress"));
+        escapeMenu.SetActive(false);
+        helpUI.SetActive(wasHelpActive);
         UI.SetActive(true);
     }
 }
