@@ -10,6 +10,7 @@ public class MainMenuController : MonoBehaviour
         soundSystem = GameObject.Find("SoundSystem");
         DontDestroyOnLoad(soundSystem);
         TrackData.Load();
+        soundSystem.GetComponent<AudioSource>().volume = TrackData.settings.volume;
     }
     public void Exit()
     {

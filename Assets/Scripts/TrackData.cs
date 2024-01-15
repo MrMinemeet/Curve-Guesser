@@ -8,8 +8,11 @@ public class TrackData
 {
     private static string datapathTrackInfo = Application.persistentDataPath + "TrackData.dat";
     private static string datapathFinishedTracks = Application.persistentDataPath + "FinishedTracks.dat";
+    private static string datapathSettings = Application.persistentDataPath + "Settings.dat";
+    
     public static Dictionary<Difficulty, Dictionary<Function, TrackInfo>> tracks;
     public static ISet<(Difficulty, Function)> finishedTracks;
+    public static Settings settings;
 
     public static TrackInfo Get(Difficulty difficulty, Function function)
     {
@@ -27,6 +30,15 @@ public class TrackData
         bf.Serialize(fs, tracks);
         fs.Close();
     }
+    public static void Set(Settings settings)
+    {
+        TrackData.settings = settings;
+        BinaryFormatter bf = new BinaryFormatter();
+        FileStream fs = File.Create(datapathSettings);
+        bf.Serialize(fs, settings);
+        fs.Close();
+    }
+
     public static void TrackFinished(Difficulty difficulty, Function function)
     {
         finishedTracks.Add((difficulty, function));
@@ -65,6 +77,17 @@ public class TrackData
         {
             finishedTracks = new HashSet<(Difficulty, Function)>();
         }
+        if (File.Exists(datapathSettings))
+        {
+            BinaryFormatter bf = new BinaryFormatter();
+            FileStream fs = File.Open(datapathSettings, FileMode.Open);
+            settings = (Settings)bf.Deserialize(fs);
+            fs.Close();
+        }
+        else
+        {
+            settings = new Settings(true, true, true, 1.0f);
+        }
     }
 }
 
@@ -84,5 +107,22 @@ public class TrackInfo
         this.currentLevel = currentLevel;
         this.score = score;
         this.fails = fails;
+    }
+}
+
+[Serializable]
+public class Settings
+{
+    public bool showGraph;
+    public bool showGrid;
+    public bool showFunction;
+    public float volume;
+
+    public Settings(bool showGraph, bool showGrid, bool showFunction, float volume)
+    {      
+        this.showGraph = showGraph;
+        this.showGrid = showGrid;
+        this.showFunction = showFunction;
+        this.volume = volume;
     }
 }

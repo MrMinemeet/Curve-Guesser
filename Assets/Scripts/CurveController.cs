@@ -66,7 +66,7 @@ public class CurveController : MonoBehaviour
     private Toggle ShowGraphToggle;
     private Toggle ShowGridToggle;
     private Toggle ShowEquationToggle;
-    private bool ShowGraph;
+    private bool ShowGraph = false;
     private bool ShowEquation;
 
 
@@ -120,24 +120,33 @@ public class CurveController : MonoBehaviour
         ShowGridToggle = GameObject.Find("EscapeMenu/Box/ShowGrid").GetComponent<Toggle>();
         ShowEquationToggle = GameObject.Find("EscapeMenu/Box/ShowEquation").GetComponent<Toggle>();
 
-        soundSystem.GetComponent<AudioSource>().volume = SoundSlider.value;
+        SoundSlider.value = soundSystem.GetComponent<AudioSource>().volume;
+        ShowGraphToggle.isOn = TrackData.settings.showGraph;
+        ShowGridToggle.isOn = TrackData.settings.showGrid;
+        ShowEquationToggle.isOn = TrackData.settings.showFunction;
         SoundSlider.onValueChanged.AddListener(delegate
         {
             soundSystem.GetComponent<AudioSource>().volume = SoundSlider.value;
+            TrackData.Set(new Settings(ShowGraph, ShowGridToggle.isOn, ShowEquation, SoundSlider.value));
         });
+        Debug.Log("ShowGraph " + ShowGraph);
         ShowGraph = ShowGraphToggle.isOn;
+        lineRenderer.enabled = ShowGraphToggle.isOn;
         ShowEquation = ShowEquationToggle.isOn;
         ShowGraphToggle.onValueChanged.AddListener(delegate {
             ShowGraph = ShowGraphToggle.isOn;
             lineRenderer.enabled = ShowGraphToggle.isOn;
+            TrackData.Set(new Settings(ShowGraph, ShowGridToggle.isOn, ShowEquation, SoundSlider.value));
         });
         ShowGridToggle.onValueChanged.AddListener(delegate {
             overlay_PI.SetActive(ShowGridToggle.isOn && function == Function.Sine);   
-            overlay_NUMBER.SetActive(ShowGridToggle.isOn && function != Function.Sine);   
+            overlay_NUMBER.SetActive(ShowGridToggle.isOn && function != Function.Sine);
+            TrackData.Set(new Settings(ShowGraph, ShowGridToggle.isOn, ShowEquation, SoundSlider.value));
         });
         ShowEquationToggle.onValueChanged.AddListener(delegate {
             ShowEquation = ShowEquationToggle.isOn;
             functionText.text = "";
+            TrackData.Set(new Settings(ShowGraph, ShowGridToggle.isOn, ShowEquation, SoundSlider.value));
         });
 
         escapeMenu = GameObject.Find("EscapeMenu");
