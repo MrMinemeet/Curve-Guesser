@@ -43,5 +43,7 @@ Explanation of what each parameter is changing for the specific function
 ## Playtesting / Evaluation
 Ask ex-teachers of ours to conduct a small, informal study about the game
 
+---
+
 # Documentation
 TODO
