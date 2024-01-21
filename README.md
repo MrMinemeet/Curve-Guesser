@@ -45,5 +45,11 @@ Ask ex-teachers of ours to conduct a small, informal study about the game
 
 ---
 
-# Documentation
-TODO
+# Teachers Manual
+* Install the game on lab your PCs or let the students install it (or use the online version when available)
+* Tell the students which track to play (in the future you can provide them a code with which they can only play the predefined levels)
+* The levels explain the parameters and what they do to the graph of the function
+* Maybe explain the concepts in class beforehand anyway, so they have a clue what they are doing
+* They need to know the value of pi up to 3.14 for the sine levels.
+* In the future there will be automatic point tracking in a teacher tool for the curve guesser
+* Based on the scores you can decide which topics to repeat or to emphasise later
