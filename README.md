@@ -1,5 +1,6 @@
 # Curve Guesser
 This repository holds the source code for the "educational" game "_Curve Guesser_" for the course "_Educational Game Design_" in WS2023/24 at the [Johannes Kepler University](https://www.jku.at/) in Linz.
+As the LVA is over, the repository will be set to read-only. If you want to work on it further, do so by forking this repository. Also link to this repository in any further work.
 
 # Project Outline
 ## Target Group
